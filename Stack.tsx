@@ -1,6 +1,6 @@
 /* eslint react/no-unstable-nested-components: 0 */
 
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { BottomTabNavigationProp, createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { DarkTheme, NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useTheme, View } from "native-base";
@@ -552,11 +552,18 @@ function SearchStackScreen() {
   );
 }
 
+import { DrawerActions, useNavigation, useIsFocused, useRoute } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+
 const Tab = createBottomTabNavigator();
-function Tabs() {
+function Tabs( {navigation}) {
   const { unread } = useAppSelector(selectSite);
   const { t } = useTranslation();
   const currentAccount = useAppSelector(selectCurrentAccount);
+  // const navigation = useNavigation();
+
+  const isFocused = useIsFocused();
+  const route = useRoute();
 
   return (
     <Tab.Navigator
@@ -576,6 +583,26 @@ function Tabs() {
           ),
           tabBarLabel: t("Feed"),
           freezeOnBlur: false,
+        }}
+        listeners={{
+          tabPress: (e) => {
+            console.log(e);
+            if(isFocused) {
+              console.log("Focused");
+              console.log("Route:");
+              console.log(route);
+              console.log("Route end");
+              console.log(navigation);
+              // navigation.dispatch(DrawerActions.closeDrawer());
+              // e.preventDefault();
+            } else {
+              console.log("Not focused");
+            }
+            
+          },
+          focus: (e) => {
+            console.log(e);
+          }
         }}
       />
       <Tab.Screen
